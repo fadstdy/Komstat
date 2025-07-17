@@ -50,7 +50,7 @@ data_processed <- prepare_data(data_raw)
 
 # Define UI
 ui <- dashboardPage(
-  dashboardHeader(title = "Dashboard Analisis Statistik"),
+  dashboardHeader(title = "Potret Sosial Ekonomi Indonesia"),
   
   dashboardSidebar(
     sidebarMenu(

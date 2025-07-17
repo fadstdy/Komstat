@@ -340,14 +340,14 @@ manajemenDataServer <- function(id, values) {
       if (input$transformation_type %in% c("manual", "auto")) {
         cat_var <- paste0(input$select_variable, "_CAT")
         if (cat_var %in% names(data)) {
-          p1 <- ggplot(data, aes_string(x = cat_var)) +
+          p1 <- ggplot(data, aes(x = .data[[cat_var]])) + # Changed aes_string to aes with .data[[]]
             geom_bar(fill = "lightgreen", alpha = 0.7, color = "black") +
             labs(title = paste("Distribusi", cat_var),
                  x = cat_var, y = "Frekuensi") +
             theme_custom() +
             theme(axis.text.x = element_text(angle = 45, hjust = 1))
           
-          p2 <- ggplot(data, aes_string(x = cat_var, y = input$select_variable)) +
+          p2 <- ggplot(data, aes(x = .data[[cat_var]], y = .data[[input$select_variable]])) + # Changed aes_string to aes with .data[[]]
             geom_boxplot(fill = "lightyellow", alpha = 0.7) +
             labs(title = paste("Boxplot per Kategori"),
                  x = cat_var, y = input$select_variable) +
@@ -359,13 +359,13 @@ manajemenDataServer <- function(id, values) {
       } else {
         new_var <- transformation_results$transformation_info$new_variable
         if (new_var %in% names(data)) {
-          p1 <- ggplot(data, aes_string(x = new_var)) +
+          p1 <- ggplot(data, aes(x = .data[[new_var]])) + # Changed aes_string to aes with .data[[]]
             geom_histogram(bins = 30, fill = "lightblue", alpha = 0.7, color = "black") +
             labs(title = paste("Histogram", new_var),
                  x = new_var, y = "Frekuensi") +
             theme_custom()
           
-          p2 <- ggplot(data, aes_string(x = "", y = new_var)) +
+          p2 <- ggplot(data, aes(x = "", y = .data[[new_var]])) + # Changed aes_string to aes with .data[[]]
             geom_boxplot(fill = "lightcoral", alpha = 0.7) +
             labs(title = paste("Boxplot", new_var),
                  x = "", y = new_var) +

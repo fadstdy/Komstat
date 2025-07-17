@@ -16,101 +16,101 @@ statistikInferensiaUI <- function(id) {
              
              # Test type selection
              selectInput(ns("test_type"), 
-                         "Jenis Uji Statistik:",
-                         choices = list(
-                           "Uji t Satu Sampel" = "one_sample_t",
-                           "Uji t Dua Sampel" = "two_sample_t",
-                           "Uji Proporsi Satu Sampel" = "one_sample_prop",
-                           "Uji Proporsi Dua Sampel" = "two_sample_prop",
-                           "Uji Variansi" = "variance_test",
-                           "ANOVA Satu Arah" = "anova_one_way",
-                           "ANOVA Dua Arah" = "anova_two_way",
-                           "Uji Chi-Square" = "chi_square"
-                         )),
+                        "Jenis Uji Statistik:",
+                        choices = list(
+                          "Uji t Satu Sampel" = "one_sample_t",
+                          "Uji t Dua Sampel" = "two_sample_t",
+                          "Uji Proporsi Satu Sampel" = "one_sample_prop",
+                          "Uji Proporsi Dua Sampel" = "two_sample_prop",
+                          "Uji Variansi" = "variance_test",
+                          "ANOVA Satu Arah" = "anova_one_way",
+                          "ANOVA Dua Arah" = "anova_two_way",
+                          "Uji Chi-Square" = "chi_square"
+                        )),
              
              # Variable selection
              selectInput(ns("test_variable"), 
-                         "Variabel Uji:",
-                         choices = NULL),
+                        "Variabel Uji:",
+                        choices = NULL),
              
              # Conditional inputs for different tests
              conditionalPanel(
                condition = "input.test_type == 'one_sample_t'",
                ns = ns,
                numericInput(ns("mu0"), 
-                            "Nilai Hipotesis (μ₀):",
-                            value = 0)
+                           "Nilai Hipotesis (μ₀):",
+                           value = 0)
              ),
              
              conditionalPanel(
                condition = "input.test_type == 'two_sample_t'",
                ns = ns,
                selectInput(ns("group_variable"), 
-                           "Variabel Pengelompokan:",
-                           choices = NULL),
+                          "Variabel Pengelompokan:",
+                          choices = NULL),
                checkboxInput(ns("equal_var"), 
-                             "Asumsi Variansi Sama", 
-                             value = TRUE)
+                            "Asumsi Variansi Sama", 
+                            value = TRUE)
              ),
              
              conditionalPanel(
                condition = "input.test_type == 'one_sample_prop'",
                ns = ns,
                numericInput(ns("p0"), 
-                            "Proporsi Hipotesis (p₀):",
-                            value = 0.5,
-                            min = 0,
-                            max = 1,
-                            step = 0.01)
+                           "Proporsi Hipotesis (p₀):",
+                           value = 0.5,
+                           min = 0,
+                           max = 1,
+                           step = 0.01)
              ),
              
              conditionalPanel(
                condition = "input.test_type == 'two_sample_prop'",
                ns = ns,
                selectInput(ns("group_variable_prop"), 
-                           "Variabel Pengelompokan:",
-                           choices = NULL)
+                          "Variabel Pengelompokan:",
+                          choices = NULL)
              ),
              
              conditionalPanel(
                condition = "input.test_type == 'variance_test'",
                ns = ns,
                selectInput(ns("group_variable_var"), 
-                           "Variabel Pengelompokan:",
-                           choices = NULL)
+                          "Variabel Pengelompokan:",
+                          choices = NULL)
              ),
              
              conditionalPanel(
                condition = "input.test_type == 'anova_one_way'",
                ns = ns,
                selectInput(ns("group_variable_anova"), 
-                           "Variabel Pengelompokan:",
-                           choices = NULL)
+                          "Variabel Pengelompokan:",
+                          choices = NULL)
              ),
              
              conditionalPanel(
                condition = "input.test_type == 'anova_two_way'",
                ns = ns,
                selectInput(ns("factor1"), 
-                           "Faktor 1:",
-                           choices = NULL),
+                          "Faktor 1:",
+                          choices = NULL),
                selectInput(ns("factor2"), 
-                           "Faktor 2:",
-                           choices = NULL),
+                          "Faktor 2:",
+                          choices = NULL),
                checkboxInput(ns("interaction"), 
-                             "Sertakan Interaksi", 
-                             value = TRUE)
+                            "Sertakan Interaksi", 
+                            value = TRUE)
              ),
              
              conditionalPanel(
                condition = "input.test_type == 'chi_square'",
                ns = ns,
                selectInput(ns("var1_chi"), 
-                           "Variabel 1:",
-                           choices = NULL),
+                          "Variabel 1:",
+                          choices = NULL),
                selectInput(ns("var2_chi"), 
-                           "Variabel 2:",
-                           choices = NULL)
+                          "Variabel 2:",
+                          choices = NULL)
              ),
              
              # Alternative hypothesis
@@ -118,50 +118,50 @@ statistikInferensiaUI <- function(id) {
                condition = "input.test_type == 'one_sample_t' || input.test_type == 'two_sample_t'",
                ns = ns,
                selectInput(ns("alternative"), 
-                           "Hipotesis Alternatif:",
-                           choices = list(
-                             "Dua arah (≠)" = "two.sided",
-                             "Lebih besar (>)" = "greater",
-                             "Lebih kecil (<)" = "less"
-                           ))
+                          "Hipotesis Alternatif:",
+                          choices = list(
+                            "Dua arah (≠)" = "two.sided",
+                            "Lebih besar (>)" = "greater",
+                            "Lebih kecil (<)" = "less"
+                          ))
              ),
              
              # Significance level
              numericInput(ns("alpha"), 
-                          "Tingkat Signifikansi (α):",
-                          value = 0.05,
-                          min = 0.01,
-                          max = 0.1,
-                          step = 0.01),
+                         "Tingkat Signifikansi (α):",
+                         value = 0.05,
+                         min = 0.01,
+                         max = 0.1,
+                         step = 0.01),
              
              # Confidence level
              numericInput(ns("conf_level"), 
-                          "Tingkat Kepercayaan:",
-                          value = 0.95,
-                          min = 0.8,
-                          max = 0.99,
-                          step = 0.01),
+                         "Tingkat Kepercayaan:",
+                         value = 0.95,
+                         min = 0.8,
+                         max = 0.99,
+                         step = 0.01),
              
              # Action buttons
              br(),
              actionButton(ns("run_test"), 
-                          "Jalankan Uji", 
-                          class = "btn-success"),
+                         "Jalankan Uji", 
+                         class = "btn-success"),
              br(), br(),
              
              # Download options
              h5("Download Hasil:"),
              downloadButton(ns("download_plot"), 
-                            "Download Plot", 
-                            class = "btn-primary"),
+                           "Download Plot", 
+                           class = "btn-primary"),
              br(), br(),
              downloadButton(ns("download_results"), 
-                            "Download Hasil", 
-                            class = "btn-primary"),
+                           "Download Hasil", 
+                           class = "btn-primary"),
              br(), br(),
              downloadButton(ns("download_report"), 
-                            "Download Laporan", 
-                            class = "btn-info")
+                           "Download Laporan", 
+                           class = "btn-info")
            )
     ),
     
@@ -184,16 +184,16 @@ statistikInferensiaUI <- function(id) {
              width = 12,
              tabsetPanel(
                tabPanel("Plot Utama",
-                        br(),
-                        withSpinner(plotOutput(ns("main_plot"), height = "400px"))),
+                       br(),
+                       withSpinner(plotOutput(ns("main_plot"), height = "400px"))),
                
                tabPanel("Distribusi",
-                        br(),
-                        withSpinner(plotOutput(ns("distribution_plot"), height = "400px"))),
+                       br(),
+                       withSpinner(plotOutput(ns("distribution_plot"), height = "400px"))),
                
                tabPanel("Confidence Interval",
-                        br(),
-                        withSpinner(plotOutput(ns("ci_plot"), height = "400px")))
+                       br(),
+                       withSpinner(plotOutput(ns("ci_plot"), height = "400px")))
              )
            ),
            
@@ -215,16 +215,16 @@ statistikInferensiaUI <- function(id) {
              collapsible = TRUE,
              tabsetPanel(
                tabPanel("Effect Size",
-                        br(),
-                        withSpinner(tableOutput(ns("effect_size")))),
+                       br(),
+                       withSpinner(tableOutput(ns("effect_size")))),
                
                tabPanel("Power Analysis",
-                        br(),
-                        withSpinner(verbatimTextOutput(ns("power_analysis")))),
+                       br(),
+                       withSpinner(verbatimTextOutput(ns("power_analysis")))),
                
                tabPanel("Post-hoc Tests",
-                        br(),
-                        withSpinner(tableOutput(ns("posthoc_tests"))))
+                       br(),
+                       withSpinner(tableOutput(ns("posthoc_tests"))))
              )
            )
     ),
@@ -253,23 +253,23 @@ statistikInferensiaServer <- function(id, values) {
       categorical_vars <- get_categorical_vars(values$current_data)
       
       updateSelectInput(session, "test_variable", 
-                        choices = setNames(numeric_vars, numeric_vars))
+                       choices = setNames(numeric_vars, numeric_vars))
       updateSelectInput(session, "group_variable", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
       updateSelectInput(session, "group_variable_prop", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
       updateSelectInput(session, "group_variable_var", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
       updateSelectInput(session, "group_variable_anova", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
       updateSelectInput(session, "factor1", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
       updateSelectInput(session, "factor2", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
       updateSelectInput(session, "var1_chi", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
       updateSelectInput(session, "var2_chi", 
-                        choices = setNames(categorical_vars, categorical_vars))
+                       choices = setNames(categorical_vars, categorical_vars))
     })
     
     # Reactive values for test results
@@ -293,8 +293,8 @@ statistikInferensiaServer <- function(id, values) {
         # One-sample t-test
         variable <- data[[input$test_variable]]
         test_result <- t.test(variable, mu = input$mu0, 
-                              alternative = input$alternative,
-                              conf.level = input$conf_level)
+                             alternative = input$alternative,
+                             conf.level = input$conf_level)
         test_results$results <- test_result
         
         # Create visualization
@@ -327,9 +327,9 @@ statistikInferensiaServer <- function(id, values) {
           "Hipotesis:\n",
           "H0: μ =", input$mu0, "\n",
           "H1: μ", switch(input$alternative, 
-                          "two.sided" = "≠", 
-                          "greater" = ">", 
-                          "less" = "<"), input$mu0, "\n\n",
+                         "two.sided" = "≠", 
+                         "greater" = ">", 
+                         "less" = "<"), input$mu0, "\n\n",
           "Hasil:\n",
           "- t-statistik:", round(test_result$statistic, 4), "\n",
           "- df:", test_result$parameter, "\n",
@@ -350,14 +350,14 @@ statistikInferensiaServer <- function(id, values) {
         # Two-sample t-test
         formula_str <- paste(input$test_variable, "~", input$group_variable)
         test_result <- t.test(as.formula(formula_str), data = data,
-                              var.equal = input$equal_var,
-                              alternative = input$alternative,
-                              conf.level = input$conf_level)
+                             var.equal = input$equal_var,
+                             alternative = input$alternative,
+                             conf.level = input$conf_level)
         test_results$results <- test_result
         
         # Create visualization
         test_results$plot <- ggplot(data, aes(x = .data[[input$group_variable]], 
-                                              y = .data[[input$test_variable]])) +
+                                             y = .data[[input$test_variable]])) +
           geom_boxplot(fill = "lightblue", alpha = 0.7) +
           geom_jitter(width = 0.2, alpha = 0.5) +
           stat_summary(fun = mean, geom = "point", color = "red", size = 3) +
@@ -369,14 +369,14 @@ statistikInferensiaServer <- function(id, values) {
         group_stats <- data %>%
           group_by(.data[[input$group_variable]]) %>%
           summarise(mean = mean(.data[[input$test_variable]], na.rm = TRUE),
-                    sd = sd(.data[[input$test_variable]], na.rm = TRUE),
-                    n = n(),
-                    .groups = 'drop')
+                   sd = sd(.data[[input$test_variable]], na.rm = TRUE),
+                   n = n(),
+                   .groups = 'drop')
         
         if (nrow(group_stats) == 2) {
           pooled_sd <- sqrt(((group_stats$n[1] - 1) * group_stats$sd[1]^2 + 
-                               (group_stats$n[2] - 1) * group_stats$sd[2]^2) / 
-                              (group_stats$n[1] + group_stats$n[2] - 2))
+                            (group_stats$n[2] - 1) * group_stats$sd[2]^2) / 
+                           (group_stats$n[1] + group_stats$n[2] - 2))
           effect_size <- abs(group_stats$mean[1] - group_stats$mean[2]) / pooled_sd
           
           test_results$effect_size <- data.frame(
@@ -398,9 +398,9 @@ statistikInferensiaServer <- function(id, values) {
           "Hipotesis:\n",
           "H0: μ₁ = μ₂\n",
           "H1: μ₁", switch(input$alternative, 
-                           "two.sided" = "≠", 
-                           "greater" = ">", 
-                           "less" = "<"), "μ₂\n\n",
+                         "two.sided" = "≠", 
+                         "greater" = ">", 
+                         "less" = "<"), "μ₂\n\n",
           "Hasil:\n",
           "- t-statistik:", round(test_result$statistic, 4), "\n",
           "- df:", test_result$parameter, "\n",
@@ -451,7 +451,7 @@ statistikInferensiaServer <- function(id, values) {
         
         # Create visualization
         test_results$plot <- ggplot(complete_data, aes(x = .data[[input$group_variable_anova]], 
-                                                       y = .data[[input$test_variable]])) +
+                                                      y = .data[[input$test_variable]])) +
           geom_boxplot(fill = "lightgreen", alpha = 0.7) +
           geom_jitter(width = 0.2, alpha = 0.5) +
           stat_summary(fun = mean, geom = "point", color = "red", size = 3) +
@@ -500,8 +500,8 @@ statistikInferensiaServer <- function(id, values) {
             p_value <- anova_summary[[1]][["Pr(>F)"]][1]
             if (!is.na(p_value) && length(p_value) > 0 && p_value < input$alpha) {
               posthoc_result <- pairwise.t.test(complete_data[[input$test_variable]], 
-                                                complete_data[[input$group_variable_anova]], 
-                                                p.adjust.method = "bonferroni")
+                                               complete_data[[input$group_variable_anova]], 
+                                               p.adjust.method = "bonferroni")
               test_results$posthoc <- posthoc_result
             }
           }
