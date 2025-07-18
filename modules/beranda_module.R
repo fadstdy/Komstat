@@ -13,30 +13,66 @@ berandaUI <- function(id) {
              status = "primary",
              solidHeader = TRUE,
              width = 12,
-             h3("Dashboard Analisis Data Sosial-Ekonomi Indonesia",
+             h3("Dashboard Analisis Data Sosial-Ekonomi Indonesia", 
                 style = "text-align: center; margin-bottom: 20px;"),
-             p("Dashboard ini dikembangkan untuk memfasilitasi analisis statistik komprehensif terhadap data sosial-ekonomi Indonesia.
-               Dengan menggunakan framework R Shiny, dashboard ini menyediakan antarmuka yang intuitif untuk eksplorasi data,
+             p("Dashboard ini dikembangkan untuk memfasilitasi analisis statistik komprehensif terhadap data sosial-ekonomi Indonesia. 
+               Dengan menggunakan framework R Shiny, dashboard ini menyediakan antarmuka yang intuitif untuk eksplorasi data, 
                pengujian hipotesis, dan pemodelan statistik.",
                style = "text-align: justify; font-size: 14px;")
            )
     ),
     
-    # Data overview section
+    # Key Metrics (Value Boxes)
+    fluidRow(
+      column(6,
+             valueBoxOutput(ns("n_obs_valuebox"), width = 12) # Display in a single wide box
+      ),
+      column(6,
+             valueBoxOutput(ns("n_vars_valuebox"), width = 12) # Display in a single wide box
+      )
+    ),
+    
+    # Top 5 Regions Section
+    column(12,
+           box(
+             title = "Fakta Data Utama: Top 5 Daerah",
+             status = "info",
+             solidHeader = TRUE,
+             width = 12,
+             collapsible = TRUE,
+             tabsetPanel(
+               tabPanel("Tingkat Kemiskinan Tertinggi",
+                        br(),
+                        withSpinner(tableOutput(ns("top5_poverty")))),
+               tabPanel("Persentase Anak Tertinggi",
+                        br(),
+                        withSpinner(tableOutput(ns("top5_children")))),
+               tabPanel("Rumah Tangga Tanpa Listrik Tertinggi",
+                        br(),
+                        withSpinner(tableOutput(ns("top5_noelectric")))),
+               tabPanel("Jumlah Penduduk Tertinggi",
+                        br(),
+                        withSpinner(tableOutput(ns("top5_population")))),
+               tabPanel("Tingkat Buta Huruf Tertinggi",
+                        br(),
+                        withSpinner(tableOutput(ns("top5_illiterate"))))
+             )
+           )
+    ),
+    
+    # Data overview section (Moved below Top 5)
     column(6,
            box(
              title = "Informasi Dataset Utama",
              status = "info",
              solidHeader = TRUE,
              width = 12,
-             height = "auto", # Mengubah tinggi menjadi auto agar konten bisa menyesuaikan
+             height = "auto",
              div(
                h4("📊 Dataset: Data Kerentanan Sosial di Indonesia"),
                hr(),
                tags$ul(
                  tags$li(strong("Sumber Data Utama: "), "Survei Sosial Ekonomi Nasional (SUSENAS) 2017 oleh BPS-Statistics Indonesia"),
-                 tags$li(strong("Jumlah Observasi: "), textOutput(ns("n_obs"), inline = TRUE), " (Kabupaten/Kota)"),
-                 tags$li(strong("Jumlah Variabel: "), textOutput(ns("n_vars"), inline = TRUE)),
                  tags$li(strong("Periode Data: "), "Cross-Sectional (2017)"),
                  tags$li(strong("Unit Analisis: "), "Kabupaten/Kota di Indonesia"),
                  tags$li(strong("Cakupan Geografis: "), "511 Kabupaten/Kota di Seluruh Indonesia")
@@ -71,7 +107,7 @@ berandaUI <- function(id) {
            )
     ),
     
-    # Features section
+    # Features section (Moved below Top 5)
     column(6,
            box(
              title = "Fitur Dashboard",
@@ -84,10 +120,10 @@ berandaUI <- function(id) {
                hr(),
                tags$ul(
                  tags$li(strong("Manajemen Data: "), "Transformasi dan kategorisasi variabel, termasuk interpretasi output."),
-                 tags$li(strong("Eksplorasi Data: "), "Statistik deskriptif, visualisasi (histogram, boxplot, barplot), tabel ringkasan, dan peta (jika memungkinkan), disertai interpretasi."),
-                 tags$li(strong("Uji Asumsi: "), "Pengujian normalitas (Shapiro-Wilk, Q-Q plot) dan homogenitas varians (Levene, Bartlett) dengan interpretasi."),
+                 tags$li(strong("Eksplorasi Data: "), "Statistik deskriptif dan visualisasi (histogram, boxplot, barplot), tabel ringkasan, dan peta (jika memungkinkan), disertai interpretasi."),
+                 tags$li(strong("Uji Asumsi: "), "Pengujian normalitas (Shapiro-Wilk, Q-Q plot), homogenitas varians (Levene, Bartlett), multikolinearitas (VIF), dan heteroskedastisitas (ncvTest, Breusch-Pagan) dengan interpretasi."),
                  tags$li(strong("Statistik Inferensia: "), "Uji beda rata-rata (satu/dua kelompok), uji proporsi (satu/dua kelompok), uji variansi, ANOVA (satu/dua arah), dan penjelasan hasil."),
-                 tags$li(strong("Regresi Linear Berganda: "), "Analisis regresi lengkap dengan uji asumsi (normalitas residual, multikolinearitas), serta penjelasan parameter dan kesimpulan model.")
+                 tags$li(strong("Regresi Linear Berganda: "), "Analisis regresi berganda lengkap dengan uji asumsi (normalitas residual, multikolinearitas, heteroskedastisitas), serta penjelasan parameter dan kesimpulan model.")
                ),
                br(),
                h5("📥 Fitur Ekspor Hasil:"),
@@ -101,31 +137,7 @@ berandaUI <- function(id) {
            )
     ),
     
-    # Interesting Facts section
-    column(12,
-           box(
-             title = "Fakta Menarik dari Dataset",
-             status = "warning",
-             solidHeader = TRUE,
-             width = 12,
-             collapsible = TRUE,
-             div(
-               h4("💡 Insight Utama:"),
-               hr(),
-               tags$ul(
-                 tags$li("Indonesia merupakan negara yang rentan terhadap berbagai bencana alam karena letaknya di Cincin Api Pasifik dan pertemuan tiga lempeng tektonik utama dunia."),
-                 tags$li("Analisis kerentanan sosial sangat penting untuk memahami dampak bencana terhadap komunitas dan kemampuannya untuk pulih."),
-                 tags$li("Dataset ini mencakup 511 kabupaten/kota di Indonesia, yang telah dikalibrasi dengan peta geografis Indonesia tahun 2013 untuk tujuan analisis spasial."),
-                 tags$li("Hampir semua variabel dalam dataset menunjukkan keberadaan *outlier*, mengindikasikan adanya ketidaksetaraan antar wilayah di Indonesia dalam konteks kerentanan sosial."),
-                 tags$li("Wilayah Timur Indonesia, khususnya Maluku dan Papua, menunjukkan karakteristik demografi yang berbeda dengan persentase anak-anak dan ukuran keluarga yang relatif lebih tinggi, meskipun populasi perempuan dan lansia cenderung rendah."),
-                 tags$li("Maluku dan Papua menghadapi tantangan signifikan terkait akses listrik, tingkat kemiskinan, buta huruf, dan sistem drainase yang kurang memadai dibandingkan wilayah lain."),
-                 tags$li("Mayoritas rumah tangga di berbagai wilayah memiliki persentase tinggi yang tidak mendapatkan pelatihan kesiapsiagaan bencana, ironisnya, banyak dari wilayah ini juga merupakan daerah rawan bencana.")
-               )
-             )
-           )
-    ),
-    
-    # Metadata Article section
+    # Metadata Article section (Kept as is, but order adjusted)
     column(12,
            box(
              title = "Metadata Artikel Pendukung",
@@ -169,7 +181,7 @@ berandaUI <- function(id) {
                  tags$li(strong("Beranda: "), "Memahami *overview* dataset, metadata, fakta menarik, dan fitur *dashboard*."),
                  tags$li(strong("Manajemen Data: "), "Melakukan transformasi data sesuai kebutuhan analisis, dengan interpretasi setiap output."),
                  tags$li(strong("Eksplorasi Data: "), "Mengeksplorasi karakteristik data melalui statistik deskriptif dan visualisasi interaktif, disertai interpretasi."),
-                 tags$li(strong("Uji Asumsi: "), "Memeriksa asumsi-asumsi yang diperlukan untuk analisis statistik inferensial, dengan interpretasi hasil uji."),
+                 tags$li(strong("Uji Asumsi: "), "Memeriksa asumsi-asumsi yang diperlukan untuk analisis statistik inferensial dan regresi, dengan interpretasi hasil uji."),
                  tags$li(strong("Statistik Inferensia: "), "Melakukan pengujian hipotesis (uji t, ANOVA, uji proporsi, uji variansi) sesuai tujuan penelitian, disertai penjelasan hasil."),
                  tags$li(strong("Regresi Linear: "), "Membangun model prediktif regresi linear berganda, melakukan uji asumsi model, dan interpretasi setiap parameter serta kesimpulan dari model regresi.")
                ),
@@ -224,7 +236,12 @@ berandaUI <- function(id) {
                           tags$li("DT"),
                           tags$li("plotly"),
                           tags$li("dplyr"),
-                          tags$li("officer")
+                          tags$li("officer"),
+                          tags$li("car"), # Added
+                          tags$li("lmtest"), # Added
+                          tags$li("gridExtra"), # Added
+                          tags$li("readr"), # Added
+                          tags$li("data.table") # Added
                         )
                  ),
                  column(4,
@@ -256,13 +273,94 @@ berandaUI <- function(id) {
 berandaServer <- function(id, values) {
   moduleServer(id, function(input, output, session) {
     
-    # Data overview outputs
-    output$n_obs <- renderText({
-      nrow(values$current_data)
+    # Value Boxes
+    output$n_obs_valuebox <- renderValueBox({
+      valueBox(
+        value = nrow(values$current_data),
+        subtitle = "Jumlah Observasi",
+        icon = icon("database"),
+        color = "aqua"
+      )
     })
     
-    output$n_vars <- renderText({
-      ncol(values$current_data)
+    output$n_vars_valuebox <- renderValueBox({
+      valueBox(
+        value = ncol(values$current_data),
+        subtitle = "Jumlah Variabel",
+        icon = icon("columns"),
+        color = "purple"
+      )
+    })
+    
+    # Top 5 Tables
+    output$top5_poverty <- renderTable({
+      req(values$current_data)
+      data <- values$current_data
+      if ("POVERTY" %in% names(data)) {
+        data %>%
+          arrange(desc(POVERTY)) %>%
+          head(5) %>%
+          select(DISTRICTCODE, POVERTY) %>%
+          rename("Kode Distrik" = DISTRICTCODE, "Tingkat Kemiskinan (%)" = POVERTY)
+      } else {
+        data.frame(Info = "Variabel POVERTY tidak ditemukan.")
+      }
+    })
+    
+    output$top5_children <- renderTable({
+      req(values$current_data)
+      data <- values$current_data
+      if ("CHILDREN" %in% names(data)) {
+        data %>%
+          arrange(desc(CHILDREN)) %>%
+          head(5) %>%
+          select(DISTRICTCODE, CHILDREN) %>%
+          rename("Kode Distrik" = DISTRICTCODE, "Persentase Anak (%)" = CHILDREN)
+      } else {
+        data.frame(Info = "Variabel CHILDREN tidak ditemukan.")
+      }
+    })
+    
+    output$top5_noelectric <- renderTable({
+      req(values$current_data)
+      data <- values$current_data
+      if ("NOELECTRIC" %in% names(data)) {
+        data %>%
+          arrange(desc(NOELECTRIC)) %>%
+          head(5) %>%
+          select(DISTRICTCODE, NOELECTRIC) %>%
+          rename("Kode Distrik" = DISTRICTCODE, "Tanpa Listrik (%)" = NOELECTRIC)
+      } else {
+        data.frame(Info = "Variabel NOELECTRIC tidak ditemukan.")
+      }
+    })
+    
+    output$top5_population <- renderTable({
+      req(values$current_data)
+      data <- values$current_data
+      if ("POPULATION" %in% names(data)) {
+        data %>%
+          arrange(desc(POPULATION)) %>%
+          head(5) %>%
+          select(DISTRICTCODE, POPULATION) %>%
+          rename("Kode Distrik" = DISTRICTCODE, "Jumlah Penduduk" = POPULATION)
+      } else {
+        data.frame(Info = "Variabel POPULATION tidak ditemukan.")
+      }
+    })
+    
+    output$top5_illiterate <- renderTable({
+      req(values$current_data)
+      data <- values$current_data
+      if ("ILLITERATE" %in% names(data)) {
+        data %>%
+          arrange(desc(ILLITERATE)) %>%
+          head(5) %>%
+          select(DISTRICTCODE, ILLITERATE) %>%
+          rename("Kode Distrik" = DISTRICTCODE, "Tingkat Buta Huruf (%)" = ILLITERATE)
+      } else {
+        data.frame(Info = "Variabel ILLITERATE tidak ditemukan.")
+      }
     })
     
     # Data preview table

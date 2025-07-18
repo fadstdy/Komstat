@@ -131,6 +131,26 @@ interpret_t_test <- function(p_value, alternative, alpha = 0.05) {
   }
 }
 
+# Function to interpret proportion test
+interpret_prop_test <- function(p_value, alternative, alpha = 0.05) {
+  if (p_value < alpha) {
+    if (alternative == "two.sided") {
+      return(paste0("Terdapat perbedaan proporsi yang signifikan (p-value = ", 
+                    round(p_value, 4), " < ", alpha, ")"))
+    } else if (alternative == "greater") {
+      return(paste0("Proporsi kelompok pertama signifikan lebih besar (p-value = ", 
+                    round(p_value, 4), " < ", alpha, ")"))
+    } else {
+      return(paste0("Proporsi kelompok pertama signifikan lebih kecil (p-value = ", 
+                    round(p_value, 4), " < ", alpha, ")"))
+    }
+  } else {
+    return(paste0("Tidak terdapat perbedaan proporsi yang signifikan (p-value = ", 
+                  round(p_value, 4), " > ", alpha, ")"))
+  }
+}
+
+
 # Function to interpret ANOVA
 interpret_anova <- function(p_value, alpha = 0.05) {
   if (p_value < alpha) {
@@ -185,7 +205,9 @@ theme_custom <- function() {
 # Function to create summary statistics table
 create_summary_table <- function(data, var_name) {
   if (is.numeric(data[[var_name]])) {
-    stats <- calculate_basic_stats(data, var_name)
+    # Assuming calculate_basic_stats is defined elsewhere (e.g., data_processing.R)
+    # If not, you might need to define it here or ensure it's sourced.
+    stats <- calculate_basic_stats(data, var_name) 
     return(
       data.frame(
         Statistik = c("Mean", "Median", "Std Dev", "Min", "Max", "Q1", "Q3", "IQR", "Skewness", "Kurtosis", "N", "Missing"),
@@ -208,3 +230,30 @@ create_summary_table <- function(data, var_name) {
   }
   return(NULL)
 }
+
+# NEW FUNCTION: interpret_regression_summary
+interpret_regression_summary <- function(model_summary, alpha = 0.05) {
+  f_p_value <- pf(model_summary$fstatistic[1], 
+                  model_summary$fstatistic[2], 
+                  model_summary$fstatistic[3], 
+                  lower.tail = FALSE)
+  adj_r_squared <- model_summary$adj.r.squared
+  
+  overall_significance <- ""
+  if (f_p_value < alpha) {
+    overall_significance <- paste0("Model regresi secara keseluruhan **signifikan secara statistik** (p-value F-test = ", 
+                                   format_p_value(f_p_value), " < ", alpha, "), menunjukkan bahwa setidaknya satu variabel independen secara signifikan memprediksi variabel dependen.")
+  } else {
+    overall_significance <- paste0("Model regresi secara keseluruhan **tidak signifikan secara statistik** (p-value F-test = ", 
+                                   format_p_value(f_p_value), " > ", alpha, "), menunjukkan bahwa variabel independen yang digunakan tidak secara signifikan memprediksi variabel dependen.")
+  }
+  
+  r_squared_interpretation <- interpret_r_squared(adj_r_squared)
+  
+  return(paste0(overall_significance, "\n\n",
+                "Model menjelaskan ", round(adj_r_squared * 100, 2), "% variasi dalam variabel dependen (Adjusted R-squared). Ini menunjukkan ", r_squared_interpretation, " dalam menjelaskan variabilitas variabel dependen."))
+}
+
+# Assuming get_numeric_vars and get_categorical_vars are defined elsewhere
+# (e.g., in data_processing.R or sourced globally).
+# Also assuming calculate_basic_stats is available.

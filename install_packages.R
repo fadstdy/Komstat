@@ -2,81 +2,34 @@
 # install_packages.R
 
 # Function to install packages if not already installed
-install_if_missing <- function(packages) {
-  for (pkg in packages) {
-    if (!require(pkg, character.only = TRUE)) {
-      install.packages(pkg, dependencies = TRUE)
-      library(pkg, character.only = TRUE)
-    }
+install_if_missing <- function(pname) {
+  if (!require(pname, character.only = TRUE)) {
+    install.packages(pname, dependencies = TRUE)
+    library(pname, character.only = TRUE)
   }
 }
 
-# List of required packages
-required_packages <- c(
-  # Core Shiny packages
+# List of all packages required by the dashboard
+packages_to_install <- c(
   "shiny",
   "shinydashboard",
-  "shinycssloaders",
-  "shinyWidgets",
-  
-  # Data manipulation
-  "dplyr",
-  "tidyr",
-  "readr",
-  "tibble",
-  
-  # Visualization
-  "ggplot2",
-  "plotly",
-  "corrplot",
-  "gridExtra",
-  "leaflet",
-  "VIM",
-  
-  # Tables
   "DT",
-  "flextable",
-  
-  # Statistical tests
-  "car",
-  "nortest",
-  "lmtest",
-  "moments",
-  
-  # Document generation
+  "plotly",
+  "ggplot2",
+  "dplyr",
   "officer",
-  "webshot",
-  
-  # Optional packages (install if available)
-  "multcomp",
-  "glmnet",
-  "tseries"
+  "car",       # For VIF and ncvTest in linear regression, and Levene's test
+  "lmtest",    # For Breusch-Pagan test (alternative to ncvTest)
+  "gridExtra", # For combining plots
+  "readr",     # For reading data from URL
+  "data.table" # For fread (fast data reading)
 )
 
-# Install packages
-cat("Installing required packages...\n")
-install_if_missing(required_packages)
-
-# Install optional packages (ignore if failed)
-optional_packages <- c("multcomp", "glmnet", "tseries")
-for (pkg in optional_packages) {
-  tryCatch({
-    if (!require(pkg, character.only = TRUE)) {
-      install.packages(pkg, dependencies = TRUE)
-      library(pkg, character.only = TRUE)
-    }
-  }, error = function(e) {
-    cat("Optional package", pkg, "could not be installed. Some features may be limited.\n")
-  })
+# Install and load all packages
+for (package in packages_to_install) {
+  install_if_missing(package)
 }
 
-# Install webshot dependencies if needed
-if (require("webshot", quietly = TRUE)) {
-  if (!webshot::is_phantomjs_installed()) {
-    cat("Installing PhantomJS for webshot...\n")
-    webshot::install_phantomjs()
-  }
-}
-
-cat("Package installation completed!\n")
-cat("You can now run the dashboard with: shiny::runApp()\n")
+# Ensure specific functions are available if they are part of a larger package
+# For example, some functions like `case_when` are from `dplyr`, which is loaded.
+# `leveneTest` from `car` and `bptest` from `lmtest` will be loaded if the packages are installed.
